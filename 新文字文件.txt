@@ -1,0 +1,22 @@
+npm init --ye
+npm i express dotenv mongoose bcrypt http-status-codes validator passport passport-jwt passport-local cors
+
+
+
+front:
+
+npm create vuetify@latest
+
+cdn vuetify-project
+
+npm run dev
+
+npm i axios vee-validate yup validator
+
+npm i -D @vue/eslint-config-standard
+
+
+npm i express-mongo-sanitize
+
+
+
