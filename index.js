@@ -8,6 +8,8 @@ import rateLimit from 'express-rate-limit'
 import routeUser from './routes/user.js'
 import routeProduct from './routes/product.js'
 import routeOrder from './routes/order.js'
+import routeArticle from './routes/article.js'
+import routeBoard from './routes/board.js'
 import './passport/passport.js'
 
 const app = express()
@@ -53,7 +55,9 @@ app.use(mongoSanitize())
 
 app.use('/user', routeUser)
 app.use('/product', routeProduct)
+app.use('/article', routeArticle)
 app.use('/order', routeOrder)
+app.use('/board', routeBoard)
 
 app.all('*', (req, res) => {
   res.status(StatusCodes.NOT_FOUND).json({

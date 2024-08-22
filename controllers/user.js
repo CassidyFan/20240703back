@@ -44,8 +44,14 @@ export const login = async (req, res) => {
       result: {
         token,
         account: req.user.account,
+        email: req.user.email,
         role: req.user.role,
-        cart: req.user.cartQuantity
+        cart: req.user.cartQuantity,
+        age: req.user.age,
+        job: req.user.job,
+        phone: req.user.phone,
+        address: req.user.address,
+        gender: req.user.gender
       }
     })
   } catch (error) {
@@ -82,8 +88,14 @@ export const profile = (req, res) => {
       message: '',
       result: {
         account: req.user.account,
+        email: req.user.email,
         role: req.user.role,
-        cart: req.user.cartQuantity
+        cart: req.user.cartQuantity,
+        age: req.user.age,
+        job: req.user.job,
+        address: req.user.address,
+        phone: req.user.phone,
+        gender: req.user.gender
       }
     })
   } catch (error) {
@@ -187,5 +199,70 @@ export const getCart = async (req, res) => {
       success: false,
       message: '未知錯誤'
     })
+  }
+}
+
+export const updateProfile = async (req, res) => {
+  try {
+    const updates = req.body
+    // 過濾不允許更新的欄位
+    const allowedUpdates = ['name', 'email', 'age', 'job', 'gender', 'phone', 'address'] // 根據需求調整允許更新的欄位
+    const keys = Object.keys(updates)
+
+    const isValidOperation = keys.every(key => allowedUpdates.includes(key))
+    if (!isValidOperation) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: '不允許的更新欄位'
+      })
+    }
+
+    // 如果有更新密碼，進行加密
+    // if (updates.password) {
+    //   if (updates.password.length < 4 || updates.password.length > 20) {
+    //     return res.status(StatusCodes.BAD_REQUEST).json({
+    //       success: false,
+    //       message: '使用者密碼長度不符'
+    //     })
+    //   }
+    //   updates.password = bcrypt.hashSync(updates.password, 10)
+    // }
+
+    const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true, runValidators: true }).select('-password -tokens')
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: '找不到使用者'
+      })
+    }
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '',
+      result: {
+        account: user.account,
+        email: user.email,
+        role: user.role,
+        cart: user.cartQuantity,
+        age: user.age,
+        job: user.job,
+        gender: user.gender,
+        address: user.address,
+        phone: user.phone
+      }
+    })
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      const key = Object.keys(error.errors)[0]
+      const message = error.errors[key].message
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message
+      })
+    } else {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: '未知錯誤'
+      })
+    }
   }
 }

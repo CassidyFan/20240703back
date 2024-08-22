@@ -38,6 +38,13 @@ passport.use('jwt', new passportJWT.Strategy({
   try {
     const expired = payload.exp * 1000 < new Date().getTime()
 
+    /*
+      http://localhost:4000/user/test?aaa=111&bbb=222
+      req.originUrl = /user/test?aaa=111&bbb=222
+      req.baseUrl = /user
+      req.path = /test
+      req.query = { aaa: 111, bbb: 222 }
+    */
     const url = req.baseUrl + req.path
     if (expired && url !== '/user/extend' && url !== '/user/logout') {
       throw new Error('EXPIRED')

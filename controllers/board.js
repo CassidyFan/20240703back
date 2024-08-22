@@ -1,14 +1,14 @@
-import Product from '../models/product.js'
+import Board from '../models/board.js'
 import { StatusCodes } from 'http-status-codes'
 import validator from 'validator'
 
 export const create = async (req, res) => {
   try {
     req.body.image = req.file.path
-    const result = await Product.create(req.body)
+    const result = await Board.create(req.body)
     res.status(StatusCodes.OK).json({
       success: true,
-      message: '',
+      message: '公告創建成功',
       result
     })
   } catch (error) {
@@ -36,25 +36,18 @@ export const getAll = async (req, res) => {
     const page = req.query.page * 1 || 1
     const regex = new RegExp(req.query.search || '', 'i')
 
-    const data = await Product
+    const data = await Board
       .find({
         $or: [
           { name: regex },
           { description: regex }
         ]
       })
-      // const text = 'a'
-      // const obj = { [text]: 1 }
-      // obj.a --> 1
       .sort({ [sortBy]: sortOrder })
-      // 如果一頁有 10 筆
-      // 第一頁 = 1 ~ 10 = 跳過 0 筆 = (第 1 頁 - 1) * 10 = 0
-      // 第二頁 = 11 ~ 20 = 跳過 10 筆 = (第 2 頁 - 1) * 10 = 10
-      // 第三頁 = 21 ~ 30 = 跳過 20 筆 = (第 3 頁 - 1) * 10 = 20
       .skip((page - 1) * itemsPerPage)
       .limit(itemsPerPage)
 
-    const total = await Product.estimatedDocumentCount()
+    const total = await Board.estimatedDocumentCount()
     res.status(StatusCodes.OK).json({
       success: true,
       message: '',
@@ -76,22 +69,22 @@ export const edit = async (req, res) => {
     if (!validator.isMongoId(req.params.id)) throw new Error('ID 格式錯誤')
 
     req.body.image = req.file?.path
-    await Product.findByIdAndUpdate(req.params.id, req.body, { runValidators: true }).orFail(new Error('NOT FOUND'))
+    await Board.findByIdAndUpdate(req.params.id, req.body, { runValidators: true }).orFail(new Error('NOT FOUND'))
 
     res.status(StatusCodes.OK).json({
       success: true,
-      message: ''
+      message: '公告編輯成功'
     })
   } catch (error) {
     if (error.name === 'CastError' || error.message === 'ID 格式錯誤') {
       res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
-        message: '商品 ID 格式錯誤'
+        message: '公告 ID 格式錯誤'
       })
     } else if (error.message === 'NOT FOUND') {
       res.status(StatusCodes.NOT_FOUND).json({
         success: false,
-        message: '查無商品'
+        message: '查無公告'
       })
     } else if (error.name === 'ValidationError') {
       const key = Object.keys(error.errors)[0]
@@ -117,26 +110,18 @@ export const get = async (req, res) => {
     const page = req.query.page * 1 || 1
     const regex = new RegExp(req.query.search || '', 'i')
 
-    const data = await Product
+    const data = await Board
       .find({
-        sell: true,
         $or: [
           { name: regex },
           { description: regex }
         ]
       })
-      // const text = 'a'
-      // const obj = { [text]: 1 }
-      // obj.a --> 1
       .sort({ [sortBy]: sortOrder })
-      // 如果一頁有 10 筆
-      // 第一頁 = 1 ~ 10 = 跳過 0 筆 = (第 1 頁 - 1) * 10 = 0
-      // 第二頁 = 11 ~ 20 = 跳過 10 筆 = (第 2 頁 - 1) * 10 = 10
-      // 第三頁 = 21 ~ 30 = 跳過 20 筆 = (第 3 頁 - 1) * 10 = 20
       .skip((page - 1) * itemsPerPage)
       .limit(itemsPerPage)
 
-    const total = await Product.countDocuments({ sell: true })
+    const total = await Board.countDocuments()
     res.status(StatusCodes.OK).json({
       success: true,
       message: '',
@@ -157,7 +142,7 @@ export const getId = async (req, res) => {
   try {
     if (!validator.isMongoId(req.params.id)) throw new Error('ID 格式錯誤')
 
-    const result = await Product.findById(req.params.id).orFail(new Error('NOT FOUND'))
+    const result = await Board.findById(req.params.id).orFail(new Error('NOT FOUND'))
 
     res.status(StatusCodes.OK).json({
       success: true,
@@ -168,12 +153,12 @@ export const getId = async (req, res) => {
     if (error.name === 'CastError' || error.message === 'ID 格式錯誤') {
       res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
-        message: '商品 ID 格式錯誤'
+        message: '公告 ID 格式錯誤'
       })
     } else if (error.message === 'NOT FOUND') {
       res.status(StatusCodes.NOT_FOUND).json({
         success: false,
-        message: '查無商品'
+        message: '查無公告'
       })
     } else {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -188,22 +173,22 @@ export const remove = async (req, res) => {
   try {
     if (!validator.isMongoId(req.params.id)) throw new Error('ID 格式錯誤')
 
-    await Product.findByIdAndDelete(req.params.id).orFail(new Error('NOT FOUND'))
+    await Board.findByIdAndDelete(req.params.id).orFail(new Error('NOT FOUND'))
 
     res.status(StatusCodes.OK).json({
       success: true,
-      message: '商品刪除成功'
+      message: '板塊刪除成功'
     })
   } catch (error) {
     if (error.name === 'CastError' || error.message === 'ID 格式錯誤') {
       res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
-        message: '商品 ID 格式錯誤'
+        message: '板塊 ID 格式錯誤'
       })
     } else if (error.message === 'NOT FOUND') {
       res.status(StatusCodes.NOT_FOUND).json({
         success: false,
-        message: '查無商品'
+        message: '查無板塊'
       })
     } else {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -213,3 +198,71 @@ export const remove = async (req, res) => {
     }
   }
 }
+
+// export const likeBoard = async (req, res) => {
+//   try {
+//     if (!validator.isMongoId(req.params.id)) throw new Error('ID 格式錯誤')
+
+//     const board = await Board.findById(req.params.id).orFail(new Error('NOT FOUND'))
+
+//     board.likes = (board.likes || 0) + 1
+//     await board.save()
+
+//     res.status(StatusCodes.OK).json({
+//       success: true,
+//       message: '成功增加喜歡',
+//       likes: board.likes
+//     })
+//   } catch (error) {
+//     if (error.name === 'CastError' || error.message === 'ID 格式錯誤') {
+//       res.status(StatusCodes.BAD_REQUEST).json({
+//         success: false,
+//         message: '板塊 ID 格式錯誤'
+//       })
+//     } else if (error.message === 'NOT FOUND') {
+//       res.status(StatusCodes.NOT_FOUND).json({
+//         success: false,
+//         message: '查無板塊'
+//       })
+//     } else {
+//       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+//         success: false,
+//         message: '未知錯誤'
+//       })
+//     }
+//   }
+// }
+
+// export const unlikeBoard = async (req, res) => {
+//   try {
+//     if (!validator.isMongoId(req.params.id)) throw new Error('ID 格式錯誤')
+
+//     const board = await Board.findById(req.params.id).orFail(new Error('NOT FOUND'))
+
+//     board.likes = Math.max((board.likes || 0) - 1, 0)
+//     await board.save()
+
+//     res.status(StatusCodes.OK).json({
+//       success: true,
+//       message: '成功取消喜歡',
+//       likes: board.likes
+//     })
+//   } catch (error) {
+//     if (error.name === 'CastError' || error.message === 'ID 格式錯誤') {
+//       res.status(StatusCodes.BAD_REQUEST).json({
+//         success: false,
+//         message: '板塊 ID 格式錯誤'
+//       })
+//     } else if (error.message === 'NOT FOUND') {
+//       res.status(StatusCodes.NOT_FOUND).json({
+//         success: false,
+//         message: '查無板塊'
+//       })
+//     } else {
+//       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+//         success: false,
+//         message: '未知錯誤'
+//       })
+//     }
+//   }
+// }
