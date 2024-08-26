@@ -7,7 +7,8 @@ const schema = new Schema({
   },
   price: {
     type: Number,
-    required: [true, '商品價格必填']
+    required: [true, '商品價格必填'],
+    min: [0, '商品價格不能小於 0']
   },
   image: {
     type: String,
@@ -21,7 +22,7 @@ const schema = new Schema({
     type: String,
     required: [true, '商品分類必填'],
     enum: {
-      values: ['衣服', '手機', '遊戲', '食品'],
+      values: ['生活用品', '文具', '周邊'],
       message: '商品分類錯誤'
     }
   },

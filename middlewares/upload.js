@@ -12,7 +12,7 @@ cloudinary.config({
 const upload = multer({
   storage: new CloudinaryStorage({ cloudinary }),
   fileFilter (req, file, callback) {
-    if (['image/jpeg', 'image/png'].includes(file.mimetype)) {
+    if (['image/jpeg', 'image/png', 'image/jpg'].includes(file.mimetype)) {
       callback(null, true)
     } else {
       callback(new Error('FORMAT'), false)

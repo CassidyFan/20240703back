@@ -45,6 +45,30 @@ const schema = new Schema({
       message: '使用者信箱格式錯誤'
     }
   },
+  name: {
+    type: String,
+    required: false
+  },
+  gender: {
+    type: String,
+    required: false
+  },
+  age: {
+    type: String,
+    required: false
+  },
+  job: {
+    type: String,
+    required: false
+  },
+  phone: {
+    type: String,
+    required: false
+  },
+  address: {
+    type: String,
+    required: false
+  },
   tokens: {
     type: [String]
   },
@@ -59,6 +83,50 @@ const schema = new Schema({
   timestamps: true,
   versionKey: false
 })
+
+// const schema = new Schema({
+//   account: {
+//     type: String,
+//     required: [true, '使用者帳號必填'],
+//     minlength: [4, '使用者帳號長度不符'],
+//     maxlength: [20, '使用者帳號長度不符'],
+//     unique: true,
+//     validate: {
+//       validator (value) {
+//         return validator.isAlphanumeric(value)
+//       },
+//       message: '使用者帳號格式錯誤'
+//     }
+//   },
+//   password: {
+//     type: String,
+//     required: [true, '使用者密碼必填']
+//   },
+//   email: {
+//     type: String,
+//     required: [true, '使用者信箱必填'],
+//     unique: true,
+//     validate: {
+//       validator (value) {
+//         return validator.isEmail(value)
+//       },
+//       message: '使用者信箱格式錯誤'
+//     }
+//   },
+//   tokens: {
+//     type: [String]
+//   },
+//   cart: {
+//     type: [cartSchema]
+//   },
+//   role: {
+//     type: Number,
+//     default: UserRole.USER
+//   }
+// }, {
+//   timestamps: true,
+//   versionKey: false
+// })
 
 schema.pre('save', function (next) {
   const user = this
