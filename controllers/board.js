@@ -32,7 +32,11 @@ export const getAll = async (req, res) => {
   try {
     const sortBy = req.query.sortBy || 'createdAt'
     const sortOrder = req.query.sortOrder || 'desc'
+<<<<<<< HEAD
     const itemsPerPage = req.query.itemsPerPage * 1 || 15
+=======
+    const itemsPerPage = req.query.itemsPerPage * 1 || 10
+>>>>>>> 4bbaaf36b9c63d0b13ac6cd30610ce42c599477e
     const page = req.query.page * 1 || 1
     const regex = new RegExp(req.query.search || '', 'i')
 
@@ -106,7 +110,11 @@ export const get = async (req, res) => {
   try {
     const sortBy = req.query.sortBy || 'createdAt'
     const sortOrder = req.query.sortOrder || 'desc'
+<<<<<<< HEAD
     const itemsPerPage = req.query.itemsPerPage * 1 || 15
+=======
+    const itemsPerPage = req.query.itemsPerPage * 1 || 10
+>>>>>>> 4bbaaf36b9c63d0b13ac6cd30610ce42c599477e
     const page = req.query.page * 1 || 1
     const regex = new RegExp(req.query.search || '', 'i')
 
