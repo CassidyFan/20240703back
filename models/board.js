@@ -13,13 +13,10 @@ const schema = new Schema({
     type: String,
     required: [true, '看板圖片必填']
   }
-<<<<<<< HEAD
   // likes: {
   //   type: Number,
   //   default: 0 // 設定預設喜歡數為 0
   // }
-=======
->>>>>>> 4bbaaf36b9c63d0b13ac6cd30610ce42c599477e
 }, {
   timestamps: true,
   versionKey: false
